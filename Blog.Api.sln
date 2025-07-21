@@ -17,6 +17,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Api.UnitTests", "tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Api.IntegrationTests", "tests\Blog.Api.IntegrationTests\Blog.Api.IntegrationTests.csproj", "{54CCE667-C6B9-46EA-ADC9-4C97A57AE44B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		BlogApi.ruleset = BlogApi.ruleset
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		stylecop.json = stylecop.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,7 +120,10 @@ Global
 		{89BDAA22-153D-475D-B1F2-B65CDEABC864} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{8C98397F-71B5-4546-B4A8-EF29EF7AF5EE} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{BE256870-5CA2-48FA-A749-48BCDC293A9E} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
-		{90D22366-6DA5-4499-89B3-7931C8CDFE4A} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
-		{54CCE667-C6B9-46EA-ADC9-4C97A57AE44B} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{90D22366-6DA5-4499-89B3-7931C8CDFE4A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{54CCE667-C6B9-46EA-ADC9-4C97A57AE44B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3DDABAF9-45BA-41DD-A387-71702C3FB443}
 	EndGlobalSection
 EndGlobal
