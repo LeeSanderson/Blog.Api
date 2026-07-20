@@ -12,4 +12,11 @@
   <Folder Name="/host/">
     <Project Path="host/src/Blog.Portfolio.Host/Blog.Portfolio.Host.csproj" />
   </Folder>
+  <Folder Name="/shared/backend/">
+    <Project Path="shared/backend/Blog.Portfolio.Shared.Backend/Blog.Portfolio.Shared.Backend.csproj" />
+  </Folder>
+  <Folder Name="/apps/example/backend/">
+    <Project Path="apps/example/backend/src/Blog.Portfolio.Apps.Example.Backend/Blog.Portfolio.Apps.Example.Backend.csproj" />
+    <Project Path="apps/example/backend/tests/Blog.Portfolio.Apps.Example.Backend.Tests/Blog.Portfolio.Apps.Example.Backend.Tests.csproj" />
+  </Folder>
 </Solution>
