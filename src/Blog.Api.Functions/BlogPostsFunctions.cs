@@ -6,7 +6,6 @@ using Blog.Api.Domain.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
@@ -14,6 +13,9 @@ namespace Blog.Api.Functions;
 
 public class BlogPostsFunctions
 {
+    private static readonly string[] InvalidPostIdFormatErrors = { "Invalid post ID format" };
+    private static readonly string[] InvalidRequestBodyErrors = { "Invalid request body" };
+
     private readonly ILogger _logger;
     private readonly BlogPostService _blogPostService;
 
@@ -29,55 +31,55 @@ public class BlogPostsFunctions
     [OpenApiParameter(name: "pageSize", In = ParameterLocation.Query, Required = false, Type = typeof(int), Description = "Number of items per page")]
     [OpenApiParameter(name: "search", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "Optional search term to filter posts")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PagedList<BlogPost>), Summary = "Successful operation", Description = "Returns all blog posts")]
-    public async Task<HttpResponseData> GetBlogPosts([HttpTrigger(AuthorizationLevel.Function, "get", Route = "posts")] HttpRequestData req)
+    public async Task<HttpResponseData> GetBlogPostsAsync([HttpTrigger(AuthorizationLevel.Function, "get", Route = "posts")] HttpRequestData req)
     {
         _logger.LogInformation("Get all blog posts request received");
-        
+
         // Parse query parameters for pagination
         var query = HttpUtility.ParseQueryString(req.Url.Query);
-        
+
         // Check for pagination parameters
-        if (int.TryParse(query["pageNumber"], out var pageNumber) && 
+        if (int.TryParse(query["pageNumber"], out var pageNumber) &&
             int.TryParse(query["pageSize"], out var pageSize))
         {
-            var parameters = new PaginationParameters 
-            { 
-                PageNumber = pageNumber > 0 ? pageNumber : 1, 
-                PageSize = pageSize > 0 ? pageSize : 10 
+            var parameters = new PaginationParameters
+            {
+                PageNumber = pageNumber > 0 ? pageNumber : 1,
+                PageSize = pageSize > 0 ? pageSize : 10
             };
-            
+
             // Check if search parameter is provided
             var searchTerm = query["search"];
-            
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                _logger.LogInformation("Searching posts with term: {SearchTerm}, Page: {PageNumber}, Size: {PageSize}", 
+                _logger.LogInformation("Searching posts with term: {SearchTerm}, Page: {PageNumber}, Size: {PageSize}",
                     searchTerm, parameters.PageNumber, parameters.PageSize);
-                
+
                 var pagedResults = await _blogPostService.SearchBlogPostsAsync(searchTerm, parameters);
-                
+
                 var response = req.CreateResponse(HttpStatusCode.OK);
                 await response.WriteAsJsonAsync(pagedResults);
                 return response;
             }
-            
-            _logger.LogInformation("Getting paged posts - Page: {PageNumber}, Size: {PageSize}", 
+
+            _logger.LogInformation("Getting paged posts - Page: {PageNumber}, Size: {PageSize}",
                 parameters.PageNumber, parameters.PageSize);
-            
+
             var pagedPosts = await _blogPostService.GetBlogPostsAsync(parameters);
-            
+
             var pagedResponse = req.CreateResponse(HttpStatusCode.OK);
             await pagedResponse.WriteAsJsonAsync(pagedPosts);
             return pagedResponse;
         }
-        
+
         // Check if search parameter is provided without pagination
         var searchTermOnly = query["search"];
         if (!string.IsNullOrWhiteSpace(searchTermOnly))
         {
             _logger.LogInformation("Searching posts with term: {SearchTerm}", searchTermOnly);
             var searchResults = await _blogPostService.SearchBlogPostsAsync(searchTermOnly);
-            
+
             var searchResponse = req.CreateResponse(HttpStatusCode.OK);
             await searchResponse.WriteAsJsonAsync(searchResults);
             return searchResponse;
@@ -85,9 +87,9 @@ public class BlogPostsFunctions
 
         // Default: Get all posts without pagination
         var posts = await _blogPostService.GetAllBlogPostsAsync();
-        
+
         var defaultResponse = req.CreateResponse(HttpStatusCode.OK);
-        await defaultResponse.WriteAsJsonAsync(ApiResponse<IEnumerable<BlogPost>>.SuccessResponse(posts));
+        await defaultResponse.WriteAsJsonAsync(ApiResponse.SuccessResponse(posts));
         return defaultResponse;
     }
 
@@ -97,29 +99,29 @@ public class BlogPostsFunctions
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(BlogPost), Summary = "Successful operation", Description = "Returns the blog post with the specified ID")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.NotFound, contentType: "application/json", bodyType: typeof(ApiResponse<BlogPost>), Summary = "Not found", Description = "Blog post not found")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "application/json", bodyType: typeof(ApiResponse<BlogPost>), Summary = "Bad request", Description = "Invalid ID format")]
-    public async Task<HttpResponseData> GetBlogPostById([HttpTrigger(AuthorizationLevel.Function, "get", Route = "posts/{id}")] HttpRequestData req, string id)
+    public async Task<HttpResponseData> GetBlogPostByIdAsync([HttpTrigger(AuthorizationLevel.Function, "get", Route = "posts/{id}")] HttpRequestData req, string id)
     {
         _logger.LogInformation("Get blog post by ID request received for post ID: {PostId}", id);
 
         if (!int.TryParse(id, out var postId))
         {
             var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badResponse.WriteAsJsonAsync(ApiResponse<BlogPost>.ErrorResponse(new[] { "Invalid post ID format" }));
+            await badResponse.WriteAsJsonAsync(ApiResponse.ErrorResponse<BlogPost>(InvalidPostIdFormatErrors));
             return badResponse;
         }
 
         var post = await _blogPostService.GetBlogPostByIdAsync(postId);
-        
+
         if (post == null)
         {
             var notFoundResponse = req.CreateResponse(HttpStatusCode.NotFound);
-            await notFoundResponse.WriteAsJsonAsync(ApiResponse<BlogPost>.NotFoundResponse($"Blog post with ID {postId} not found"));
+            await notFoundResponse.WriteAsJsonAsync(ApiResponse.NotFoundResponse<BlogPost>($"Blog post with ID {postId} not found"));
             return notFoundResponse;
         }
-        
+
         var response = req.CreateResponse(HttpStatusCode.OK);
-        await response.WriteAsJsonAsync(ApiResponse<BlogPost>.SuccessResponse(post));
-        
+        await response.WriteAsJsonAsync(ApiResponse.SuccessResponse(post));
+
         return response;
     }
 
@@ -128,31 +130,31 @@ public class BlogPostsFunctions
     [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(BlogPost), Required = true, Description = "Blog post object to create")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.Created, contentType: "application/json", bodyType: typeof(ApiResponse<BlogPost>), Summary = "Successful operation", Description = "Returns the created blog post")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "application/json", bodyType: typeof(ApiResponse<BlogPost>), Summary = "Bad request", Description = "Invalid input")]
-    public async Task<HttpResponseData> CreateBlogPost([HttpTrigger(AuthorizationLevel.Function, "post", Route = "posts")] HttpRequestData req)
+    public async Task<HttpResponseData> CreateBlogPostAsync([HttpTrigger(AuthorizationLevel.Function, "post", Route = "posts")] HttpRequestData req)
     {
         _logger.LogInformation("Create blog post request received");
 
         var requestBody = await req.ReadFromJsonAsync<BlogPost>();
-        
+
         if (requestBody == null)
         {
             var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badResponse.WriteAsJsonAsync(ApiResponse<BlogPost>.ErrorResponse(new[] { "Invalid request body" }));
+            await badResponse.WriteAsJsonAsync(ApiResponse.ErrorResponse<BlogPost>(InvalidRequestBodyErrors));
             return badResponse;
         }
-        
+
         var (createdPost, errors) = await _blogPostService.CreateBlogPostAsync(requestBody);
-        
+
         if (createdPost == null)
         {
             var validationResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            await validationResponse.WriteAsJsonAsync(ApiResponse<BlogPost>.ErrorResponse(errors, "Validation failed"));
+            await validationResponse.WriteAsJsonAsync(ApiResponse.ErrorResponse<BlogPost>(errors, "Validation failed"));
             return validationResponse;
         }
-        
+
         var response = req.CreateResponse(HttpStatusCode.Created);
-        await response.WriteAsJsonAsync(ApiResponse<BlogPost>.SuccessResponse(createdPost, "Blog post created successfully"));
-        
+        await response.WriteAsJsonAsync(ApiResponse.SuccessResponse(createdPost, "Blog post created successfully"));
+
         return response;
     }
 
@@ -163,46 +165,46 @@ public class BlogPostsFunctions
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApiResponse<BlogPost>), Summary = "Successful operation", Description = "Returns the updated blog post")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.NotFound, contentType: "application/json", bodyType: typeof(ApiResponse<BlogPost>), Summary = "Not found", Description = "Blog post not found")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "application/json", bodyType: typeof(ApiResponse<BlogPost>), Summary = "Bad request", Description = "Invalid input")]
-    public async Task<HttpResponseData> UpdateBlogPost([HttpTrigger(AuthorizationLevel.Function, "put", Route = "posts/{id}")] HttpRequestData req, string id)
+    public async Task<HttpResponseData> UpdateBlogPostAsync([HttpTrigger(AuthorizationLevel.Function, "put", Route = "posts/{id}")] HttpRequestData req, string id)
     {
         _logger.LogInformation("Update blog post request received for post ID: {PostId}", id);
 
         if (!int.TryParse(id, out var postId))
         {
             var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badResponse.WriteAsJsonAsync(ApiResponse<BlogPost>.ErrorResponse(new[] { "Invalid post ID format" }));
+            await badResponse.WriteAsJsonAsync(ApiResponse.ErrorResponse<BlogPost>(InvalidPostIdFormatErrors));
             return badResponse;
         }
-        
+
         var requestBody = await req.ReadFromJsonAsync<BlogPost>();
-        
+
         if (requestBody == null)
         {
             var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badResponse.WriteAsJsonAsync(ApiResponse<BlogPost>.ErrorResponse(new[] { "Invalid request body" }));
+            await badResponse.WriteAsJsonAsync(ApiResponse.ErrorResponse<BlogPost>(InvalidRequestBodyErrors));
             return badResponse;
         }
-        
+
         var (updatedPost, errors) = await _blogPostService.UpdateBlogPostAsync(postId, requestBody);
-        
+
         if (updatedPost == null)
         {
             // Check if it's a validation error or a not found error
             if (errors.Any(e => e.Contains("not found")))
             {
                 var notFoundResponse = req.CreateResponse(HttpStatusCode.NotFound);
-                await notFoundResponse.WriteAsJsonAsync(ApiResponse<BlogPost>.NotFoundResponse($"Blog post with ID {postId} not found"));
+                await notFoundResponse.WriteAsJsonAsync(ApiResponse.NotFoundResponse<BlogPost>($"Blog post with ID {postId} not found"));
                 return notFoundResponse;
             }
-            
+
             var validationResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            await validationResponse.WriteAsJsonAsync(ApiResponse<BlogPost>.ErrorResponse(errors, "Validation failed"));
+            await validationResponse.WriteAsJsonAsync(ApiResponse.ErrorResponse<BlogPost>(errors, "Validation failed"));
             return validationResponse;
         }
-        
+
         var response = req.CreateResponse(HttpStatusCode.OK);
-        await response.WriteAsJsonAsync(ApiResponse<BlogPost>.SuccessResponse(updatedPost, "Blog post updated successfully"));
-        
+        await response.WriteAsJsonAsync(ApiResponse.SuccessResponse(updatedPost, "Blog post updated successfully"));
+
         return response;
     }
 
@@ -212,26 +214,26 @@ public class BlogPostsFunctions
     [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NoContent, Summary = "Successful operation", Description = "Blog post deleted successfully")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.NotFound, contentType: "application/json", bodyType: typeof(ApiResponse<object>), Summary = "Not found", Description = "Blog post not found")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "application/json", bodyType: typeof(ApiResponse<object>), Summary = "Bad request", Description = "Invalid ID format")]
-    public async Task<HttpResponseData> DeleteBlogPost([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "posts/{id}")] HttpRequestData req, string id)
+    public async Task<HttpResponseData> DeleteBlogPostAsync([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "posts/{id}")] HttpRequestData req, string id)
     {
         _logger.LogInformation("Delete blog post request received for post ID: {PostId}", id);
 
         if (!int.TryParse(id, out var postId))
         {
             var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badResponse.WriteAsJsonAsync(ApiResponse<object>.ErrorResponse(new[] { "Invalid post ID format" }));
+            await badResponse.WriteAsJsonAsync(ApiResponse.ErrorResponse<object>(InvalidPostIdFormatErrors));
             return badResponse;
         }
-        
+
         var deleted = await _blogPostService.DeleteBlogPostAsync(postId);
-        
+
         if (!deleted)
         {
             var notFoundResponse = req.CreateResponse(HttpStatusCode.NotFound);
-            await notFoundResponse.WriteAsJsonAsync(ApiResponse<object>.NotFoundResponse($"Blog post with ID {postId} not found"));
+            await notFoundResponse.WriteAsJsonAsync(ApiResponse.NotFoundResponse<object>($"Blog post with ID {postId} not found"));
             return notFoundResponse;
         }
-        
+
         return req.CreateResponse(HttpStatusCode.NoContent);
     }
 }

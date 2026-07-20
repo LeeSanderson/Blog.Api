@@ -7,10 +7,8 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
-    <File Path="BlogApi.ruleset" />
     <File Path="Directory.Build.props" />
-    <File Path="Directory.Build.targets" />
-    <File Path="stylecop.json" />
+    <File Path="Directory.Packages.props" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Blog.Api.Core/Blog.Api.Core.csproj" />

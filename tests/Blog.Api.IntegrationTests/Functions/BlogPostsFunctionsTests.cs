@@ -4,7 +4,6 @@ using Blog.Api.Domain.Models;
 using Blog.Api.Infrastructure.Repositories;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.Threading.Tasks;
 
 namespace Blog.Api.IntegrationTests.Functions;
 
@@ -16,7 +15,7 @@ public class BlogPostsFunctionsTests
     public BlogPostsFunctionsTests()
     {
         // Create a real repository and service with a null logger
-        _repository = new InMemoryBlogPostRepository(NullLogger<InMemoryBlogPostRepository>.Instance);
+        _repository = new InMemoryBlogPostRepository(NullLogger<InMemoryBlogPostRepository>.Instance, TimeProvider.System);
         _blogPostService = new BlogPostService(_repository, NullLogger<BlogPostService>.Instance);
     }
 
@@ -35,19 +34,19 @@ public class BlogPostsFunctionsTests
     public async Task GetBlogPostById_WithValidId_ShouldReturnPost()
     {
         // Arrange
-        var newPost = new BlogPost 
-        { 
-            Title = "Test Post", 
-            Content = "Test Content", 
-            Author = "Integration Test" 
+        var newPost = new BlogPost
+        {
+            Title = "Test Post",
+            Content = "Test Content",
+            Author = "Integration Test"
         };
-        
+
         var (createdPost, errors) = await _blogPostService.CreateBlogPostAsync(newPost);
-        
+
         // Ensure the post was created successfully
         createdPost.Should().NotBeNull();
         errors.Should().BeEmpty();
-        
+
         // Act
         var retrievedPost = await _blogPostService.GetBlogPostByIdAsync(createdPost!.Id);
 

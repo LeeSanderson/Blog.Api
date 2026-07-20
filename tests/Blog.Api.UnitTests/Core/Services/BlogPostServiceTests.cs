@@ -21,11 +21,11 @@ public class BlogPostServiceTests
         _mockRepository = new Mock<IBlogPostRepository>();
         _mockLogger = new Mock<ILogger<BlogPostService>>();
         _mockValidator = new Mock<IBlogPostValidator>();
-        
+
         // Setup default validation behavior to return valid
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<BlogPost>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
-        
+
         _service = new BlogPostService(_mockRepository.Object, _mockLogger.Object, _mockValidator.Object);
     }
 
@@ -73,7 +73,7 @@ public class BlogPostServiceTests
     {
         // Arrange
         var postToCreate = new BlogPost { Title = "New Post", Content = "New Content" };
-        var expectedPost = new BlogPost { Id = 1, Title = "New Post", Content = "New Content", CreatedAt = DateTime.UtcNow };
+        var expectedPost = new BlogPost { Id = 1, Title = "New Post", Content = "New Content", CreatedAt = DateTimeOffset.UtcNow };
 
         _mockRepository.Setup(repo => repo.CreateAsync(postToCreate))
             .ReturnsAsync(expectedPost);
@@ -93,7 +93,7 @@ public class BlogPostServiceTests
         // Arrange
         var postId = 1;
         var postToUpdate = new BlogPost { Title = "Updated Post", Content = "Updated Content" };
-        var expectedPost = new BlogPost { Id = postId, Title = "Updated Post", Content = "Updated Content", UpdatedAt = DateTime.UtcNow };
+        var expectedPost = new BlogPost { Id = postId, Title = "Updated Post", Content = "Updated Content", UpdatedAt = DateTimeOffset.UtcNow };
 
         _mockRepository.Setup(repo => repo.UpdateAsync(postId, postToUpdate))
             .ReturnsAsync(expectedPost);

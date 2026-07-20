@@ -5,9 +5,9 @@ using Microsoft.OpenApi.Models;
 
 namespace Blog.Api.Functions.Extensions;
 
-public static class OpenApiExtensions
+internal static class OpenApiExtensions
 {
-    public static IServiceCollection AddOpenApiDocumentation(this IServiceCollection services)
+    internal static IServiceCollection AddOpenApiDocumentation(this IServiceCollection services)
     {
         // Configure OpenAPI
         services.AddSingleton(_ => new OpenApiConfigurationOptions
@@ -20,18 +20,18 @@ public static class OpenApiExtensions
                 Contact = new OpenApiContact
                 {
                     Name = "API Support",
-                    Email = "support@blog.api.example"
+                    Email = "support@blog.api.example",
                 },
                 License = new OpenApiLicense
                 {
                     Name = "MIT",
-                    Url = new Uri("https://opensource.org/licenses/MIT")
-                }
+                    Url = new Uri("https://opensource.org/licenses/MIT"),
+                },
             },
             OpenApiVersion = OpenApiVersionType.V3,
             IncludeRequestingHostName = true,
             ForceHttps = false,
-            ForceHttp = false
+            ForceHttp = false,
         });
 
         return services;

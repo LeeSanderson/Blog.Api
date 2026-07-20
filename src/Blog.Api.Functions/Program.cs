@@ -5,7 +5,6 @@ using Blog.Api.Core.Services;
 using Blog.Api.Core.Validators;
 using Blog.Api.Functions.Extensions;
 using Blog.Api.Infrastructure.Repositories;
-using FluentValidation;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,10 +18,12 @@ builder.ConfigureFunctionsWebApplication();
 builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights()
+    .AddSingleton(TimeProvider.System)
     .AddSingleton<IBlogPostRepository, InMemoryBlogPostRepository>()
     .AddSingleton<BlogPostValidator>()
     .AddSingleton<BlogPostService>()
-    .AddOpenApiDocumentation();
+    .AddOpenApiDocumentation()
+    .AddCors();
 
 // Configure JSON serialization
 builder.Services.Configure<JsonSerializerOptions>(options =>
@@ -37,4 +38,4 @@ var app = builder.Build();
 // OpenAPI endpoints are automatically exposed in isolated Azure Functions
 // at /api/swagger/ui and /api/openapi/{version}
 
-app.Run();
+await app.RunAsync();
