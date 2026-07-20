@@ -19,41 +19,49 @@ At system boundaries, design interfaces that are easy to mock:
 
 **1. Use dependency injection**
 
-Pass external dependencies in rather than creating them internally:
+Pass external dependencies in via the constructor rather than creating them internally:
 
-```typescript
+```csharp
 // Easy to mock
-function processPayment(order, paymentClient) {
-  return paymentClient.charge(order.total);
+public class PaymentProcessor(IPaymentClient paymentClient)
+{
+    public Task<PaymentResult> ProcessPayment(Order order) =>
+        paymentClient.Charge(order.Total);
 }
 
 // Hard to mock
-function processPayment(order) {
-  const client = new StripeClient(process.env.STRIPE_KEY);
-  return client.charge(order.total);
+public class PaymentProcessor
+{
+    public Task<PaymentResult> ProcessPayment(Order order)
+    {
+        var client = new StripeClient(Environment.GetEnvironmentVariable("STRIPE_KEY"));
+        return client.Charge(order.Total);
+    }
 }
 ```
 
 **2. Prefer SDK-style interfaces over generic fetchers**
 
-Create specific functions for each external operation instead of one generic function with conditional logic:
+Declare a specific method for each external operation instead of one generic method with conditional logic:
 
-```typescript
-// GOOD: Each function is independently mockable
-const api = {
-  getUser: (id) => fetch(`/users/${id}`),
-  getOrders: (userId) => fetch(`/users/${userId}/orders`),
-  createOrder: (data) => fetch('/orders', { method: 'POST', body: data }),
-};
+```csharp
+// GOOD: Each member is independently mockable
+public interface IOrdersApi
+{
+    Task<User> GetUser(string id);
+    Task<IReadOnlyList<Order>> GetOrders(string userId);
+    Task<Order> CreateOrder(CreateOrderRequest request);
+}
 
 // BAD: Mocking requires conditional logic inside the mock
-const api = {
-  fetch: (endpoint, options) => fetch(endpoint, options),
-};
+public interface IOrdersApi
+{
+    Task<HttpResponseMessage> Send(string endpoint, HttpMethod method, object? body);
+}
 ```
 
 The SDK approach means:
-- Each mock returns one specific shape
+- Each `Mock<IOrdersApi>` setup returns one specific shape
 - No conditional logic in test setup
-- Easier to see which endpoints a test exercises
-- Type safety per endpoint
+- Easier to see which operations a test exercises
+- Compiler-checked types per operation

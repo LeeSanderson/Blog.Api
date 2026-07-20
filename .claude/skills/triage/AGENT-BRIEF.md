@@ -20,8 +20,8 @@ The issue may sit in `ready-for-agent` for days or weeks. The codebase will chan
 
 Describe **what** the system should do, not **how** to implement it. The agent will explore the codebase fresh and make its own implementation decisions.
 
-- **Good:** "The `SkillConfig` type should accept an optional `schedule` field of type `CronExpression`"
-- **Bad:** "Open src/types/skill.ts and add a schedule field on line 42"
+- **Good:** "The `SkillConfig` type should accept an optional `Schedule` property of type `CronExpression`"
+- **Bad:** "Open src/Types/SkillConfig.cs and add a Schedule property on line 42"
 - **Good:** "When a user runs `/triage` with no arguments, they should see a summary of issues needing attention"
 - **Bad:** "Add a switch statement in the main handler function"
 
@@ -54,7 +54,7 @@ Be specific about edge cases and error conditions.
 
 **Key interfaces:**
 - `TypeName` — what needs to change and why
-- `functionName()` return type — what it currently returns vs what it should return
+- `MethodName()` return type — what it currently returns vs what it should return
 - Config shape — any new configuration options needed
 
 **Acceptance criteria:**
@@ -90,7 +90,7 @@ and append "..." to indicate truncation.
 - The `SkillMetadata` type's `description` field — no type change needed,
   but the validation/processing logic that populates it needs to respect
   word boundaries
-- Any function that reads SKILL.md frontmatter and extracts the description
+- Any method that reads SKILL.md frontmatter and extracts the description
 
 **Acceptance criteria:**
 - [ ] Descriptions under 1024 chars are unchanged
@@ -191,11 +191,11 @@ is untouched when the flag is absent.
 
 **What to do:**
 The triage thing is broken. Look at the main file and fix it.
-The function around line 150 has the issue.
+The method around line 150 has the issue.
 
 **Files to change:**
-- src/triage/handler.ts (line 150)
-- src/types.ts (line 42)
+- src/Triage/Handler.cs (line 150)
+- src/Types.cs (line 42)
 ```
 
 This is bad because:

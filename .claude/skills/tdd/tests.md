@@ -4,20 +4,22 @@
 
 **Integration-style**: Test through real interfaces, not mocks of internal parts.
 
-```typescript
+```csharp
 // GOOD: Tests observable behavior
-test("user can checkout with valid cart", async () => {
-  const cart = createCart();
-  cart.add(product);
-  const result = await checkout(cart, paymentMethod);
-  expect(result.status).toBe("confirmed");
-});
+[Fact]
+public async Task UserCanCheckoutWithValidCart()
+{
+    var cart = CreateCart();
+    cart.Add(product);
+    var result = await Checkout(cart, paymentMethod);
+    result.Status.Should().Be(CheckoutStatus.Confirmed);
+}
 ```
 
 Characteristics:
 
 - Tests behavior users/callers care about
-- Uses public API only
+- Uses the public interface only
 - Survives internal refactors
 - Describes WHAT, not HOW
 - One logical assertion per test
@@ -26,13 +28,15 @@ Characteristics:
 
 **Implementation-detail tests**: Coupled to internal structure.
 
-```typescript
+```csharp
 // BAD: Tests implementation details
-test("checkout calls paymentService.process", async () => {
-  const mockPayment = jest.mock(paymentService);
-  await checkout(cart, payment);
-  expect(mockPayment.process).toHaveBeenCalledWith(cart.total);
-});
+[Fact]
+public async Task CheckoutCallsPaymentServiceProcess()
+{
+    var mockPayment = new Mock<IPaymentService>();
+    await Checkout(cart, payment, mockPayment.Object);
+    mockPayment.Verify(p => p.Process(cart.Total), Times.Once);
+}
 ```
 
 Red flags:
@@ -44,34 +48,43 @@ Red flags:
 - Test name describes HOW not WHAT
 - Verifying through external means instead of interface
 
-```typescript
+```csharp
 // BAD: Bypasses interface to verify
-test("createUser saves to database", async () => {
-  await createUser({ name: "Alice" });
-  const row = await db.query("SELECT * FROM users WHERE name = ?", ["Alice"]);
-  expect(row).toBeDefined();
-});
+[Fact]
+public async Task CreateUserSavesToDatabase()
+{
+    await CreateUser(new CreateUserRequest("Alice"));
+    var row = await db.QuerySingleOrDefaultAsync(
+        "SELECT * FROM Users WHERE Name = @Name", new { Name = "Alice" });
+    row.Should().NotBeNull();
+}
 
 // GOOD: Verifies through interface
-test("createUser makes user retrievable", async () => {
-  const user = await createUser({ name: "Alice" });
-  const retrieved = await getUser(user.id);
-  expect(retrieved.name).toBe("Alice");
-});
+[Fact]
+public async Task CreateUserMakesUserRetrievable()
+{
+    var user = await CreateUser(new CreateUserRequest("Alice"));
+    var retrieved = await GetUser(user.Id);
+    retrieved.Name.Should().Be("Alice");
+}
 ```
 
 **Tautological tests**: Expected value restates the implementation, so the test passes by construction.
 
-```typescript
+```csharp
 // BAD: Expected value is recomputed the way the code computes it
-test("calculateTotal sums line items", () => {
-  const items = [{ price: 10 }, { price: 5 }];
-  const expected = items.reduce((sum, i) => sum + i.price, 0);
-  expect(calculateTotal(items)).toBe(expected);
-});
+[Fact]
+public void CalculateTotalSumsLineItems()
+{
+    var items = new[] { new LineItem(Price: 10), new LineItem(Price: 5) };
+    var expected = items.Sum(i => i.Price);
+    CalculateTotal(items).Should().Be(expected);
+}
 
 // GOOD: Expected value is an independent, known literal
-test("calculateTotal sums line items", () => {
-  expect(calculateTotal([{ price: 10 }, { price: 5 }])).toBe(15);
-});
+[Fact]
+public void CalculateTotalSumsLineItems()
+{
+    CalculateTotal([new LineItem(Price: 10), new LineItem(Price: 5)]).Should().Be(15);
+}
 ```
