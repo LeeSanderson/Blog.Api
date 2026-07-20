@@ -11,10 +11,7 @@
     <File Path="Directory.Packages.props" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/Blog.Api.Core/Blog.Api.Core.csproj" />
-    <Project Path="src/Blog.Api.Domain/Blog.Api.Domain.csproj" />
     <Project Path="src/Blog.Api.Functions/Blog.Api.Functions.csproj" />
-    <Project Path="src/Blog.Api.Infrastructure/Blog.Api.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Blog.Api.IntegrationTests/Blog.Api.IntegrationTests.csproj" />

@@ -1,10 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Blog.Api.Core.Interfaces;
-using Blog.Api.Core.Services;
-using Blog.Api.Core.Validators;
 using Blog.Api.Functions.Extensions;
-using Blog.Api.Infrastructure.Repositories;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,10 +14,6 @@ builder.ConfigureFunctionsWebApplication();
 builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights()
-    .AddSingleton(TimeProvider.System)
-    .AddSingleton<IBlogPostRepository, InMemoryBlogPostRepository>()
-    .AddSingleton<BlogPostValidator>()
-    .AddSingleton<BlogPostService>()
     .AddOpenApiDocumentation()
     .AddCors();
 

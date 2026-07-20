@@ -26,10 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Blog.Api.Core\Blog.Api.Core.csproj" />
-    <ProjectReference Include="..\..\src\Blog.Api.Domain\Blog.Api.Domain.csproj" />
     <ProjectReference Include="..\..\src\Blog.Api.Functions\Blog.Api.Functions.csproj" />
-    <ProjectReference Include="..\..\src\Blog.Api.Infrastructure\Blog.Api.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <AzureFunctionsVersion>V4</AzureFunctionsVersion>
@@ -8,7 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="FluentValidation" />
     <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" />
@@ -16,9 +15,5 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.OpenApi" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Blog.Api.Core\Blog.Api.Core.csproj" />
-    <ProjectReference Include="..\Blog.Api.Infrastructure\Blog.Api.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

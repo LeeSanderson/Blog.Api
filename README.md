@@ -4,12 +4,9 @@ This is a boilerplate Azure Functions project for a Blog API built with best pra
 
 ## Project Structure
 
-The solution follows Clean Architecture principles with the following projects:
+The solution currently contains the following projects:
 
 - **Blog.Api.Functions**: Azure Functions project that exposes the HTTP endpoints
-- **Blog.Api.Core**: Contains business logic and interfaces
-- **Blog.Api.Domain**: Contains domain models and entities
-- **Blog.Api.Infrastructure**: Contains implementation of repositories and external services
 - **Blog.Api.UnitTests**: Unit tests for the solution
 - **Blog.Api.IntegrationTests**: Integration tests for the solution
 
@@ -69,10 +66,4 @@ The solution includes:
 
 ## API Endpoints
 
-| Method | Endpoint      | Description                |
-|--------|---------------|----------------------------|
-| GET    | /api/posts    | Get all blog posts        |
-| GET    | /api/posts/{id} | Get blog post by ID      |
-| POST   | /api/posts    | Create a new blog post    |
-| PUT    | /api/posts/{id} | Update an existing blog post |
-| DELETE | /api/posts/{id} | Delete a blog post      |
+None yet — the project has been stripped back to a bare Azure Functions boilerplate.
