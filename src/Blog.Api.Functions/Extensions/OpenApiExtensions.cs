@@ -25,7 +25,9 @@ internal static class OpenApiExtensions
                 License = new OpenApiLicense
                 {
                     Name = "MIT",
+#pragma warning disable S1075 // Static, well-known license URL, not an environment-specific endpoint
                     Url = new Uri("https://opensource.org/licenses/MIT"),
+#pragma warning restore S1075
                 },
             },
             OpenApiVersion = OpenApiVersionType.V3,

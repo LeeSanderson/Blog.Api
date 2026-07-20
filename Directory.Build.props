@@ -2,11 +2,15 @@
   <!-- Coding standards (analyzers, editorconfig, nullable/warnings defaults) are provided by the
        Opinionated.DotNet.CodingStandards GlobalPackageReference in Directory.Packages.props. -->
   <PropertyGroup>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- S1309 ("do not suppress issues") flags the mere presence of a #pragma warning disable/restore
+         pair, including one disabling S1309 itself, so it can't be pragma-suppressed at its own call
+         site. Downgrading it to a non-fatal warning lets the one deliberate inline suppression in
+         OpenApiExtensions.cs (S1075, for the static MIT license URL) build clean. -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);S1309</WarningsNotAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 </Project>

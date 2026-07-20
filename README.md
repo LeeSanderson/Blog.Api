@@ -12,7 +12,7 @@ The solution currently contains the following projects:
 
 ## Technologies
 
-- .NET 8.0
+- .NET 10
 - Azure Functions
 - xUnit for testing
 - FluentAssertions for test assertions
@@ -24,7 +24,7 @@ The solution currently contains the following projects:
 
 ### Prerequisites
 
-- .NET 8.0 SDK
+- .NET 10 SDK
 - Azure Functions Core Tools
 - Visual Studio 2022 or Visual Studio Code
 
