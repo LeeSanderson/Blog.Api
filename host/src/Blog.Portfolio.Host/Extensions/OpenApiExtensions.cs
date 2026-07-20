@@ -3,7 +3,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace Blog.Api.Functions.Extensions;
+namespace Blog.Portfolio.Host.Extensions;
 
 internal static class OpenApiExtensions
 {

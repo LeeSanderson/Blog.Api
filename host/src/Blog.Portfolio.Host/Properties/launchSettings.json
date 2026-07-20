@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Blog.Api.Functions": {
+    "Blog.Portfolio.Host": {
       "commandName": "Project",
       "commandLineArgs": "--port 7240",
       "launchBrowser": false

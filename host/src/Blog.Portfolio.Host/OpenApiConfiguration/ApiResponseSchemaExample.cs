@@ -1,4 +1,4 @@
-namespace Blog.Api.Functions.OpenApiConfiguration;
+namespace Blog.Portfolio.Host.OpenApiConfiguration;
 
 public class ApiResponseSchemaExample<T>
 {

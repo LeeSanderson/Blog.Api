@@ -1,14 +1,13 @@
-# Blog API - Azure Functions
+# Blog.Portfolio
 
-This is a boilerplate Azure Functions project for a Blog API built with best practices.
+A monorepo hosting a growing portfolio of small example and demo projects for sixsideddice.com, sharing one deployable backend and a common set of local-dev and delivery conventions. See `CONTEXT.md` for the domain glossary and `docs/adr/` for the architectural decisions behind this structure.
 
 ## Project Structure
 
-The solution currently contains the following projects:
-
-- **Blog.Api.Functions**: Azure Functions project that exposes the HTTP endpoints
-- **Blog.Api.UnitTests**: Unit tests for the solution
-- **Blog.Api.IntegrationTests**: Integration tests for the solution
+- **apps/**: one folder per portfolio app (`apps/{app-name}/`), each optionally with its own `backend/` and/or `frontend/`
+- **shared/**: cross-app libraries (`shared/backend/`, `shared/frontend/{framework}/`)
+- **host/**: the composition-root Azure Functions project (`Blog.Portfolio.Host`) that discovers and exposes every app's backend endpoints
+- **aspire/**: the .NET Aspire AppHost used to run the whole suite locally
 
 ## Technologies
 
@@ -43,7 +42,7 @@ dotnet test
 ### Running the Azure Functions Locally
 
 ```powershell
-cd src/Blog.Api.Functions
+cd host/src/Blog.Portfolio.Host
 func start
 ```
 
@@ -58,11 +57,7 @@ This solution uses:
 
 ## Testing
 
-The solution includes:
-
-- Unit tests using xUnit, FluentAssertions, and Moq
-- Integration tests for Functions
-- Code coverage reporting with coverlet
+No test projects exist yet — each app's backend carries its own under `apps/{app-name}/backend/tests/`, and `host/tests/` holds cross-app tests (e.g. the route-prefix architecture test). xUnit, FluentAssertions, and Moq are the established stack; coverlet reports coverage.
 
 ## API Endpoints
 

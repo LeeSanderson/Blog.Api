@@ -9,11 +9,7 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Folder Name="/src/">
-    <Project Path="src/Blog.Api.Functions/Blog.Api.Functions.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/Blog.Api.IntegrationTests/Blog.Api.IntegrationTests.csproj" />
-    <Project Path="tests/Blog.Api.UnitTests/Blog.Api.UnitTests.csproj" />
+  <Folder Name="/host/">
+    <Project Path="host/src/Blog.Portfolio.Host/Blog.Portfolio.Host.csproj" />
   </Folder>
 </Solution>
