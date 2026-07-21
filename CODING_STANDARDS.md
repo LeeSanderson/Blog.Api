@@ -56,6 +56,11 @@ full property list.
 These aren't tooling-enforced, so they're exactly what a **Standards** review
 should be checking for:
 
+- **Comments** — avoid code comments by default; prefer clean, well-named
+  classes, methods, and variables to carry intent instead. Only comment when
+  the code genuinely can't say it: an obscure algorithm, a non-obvious
+  constraint, or the reasoning behind a decision that would otherwise be
+  lost. Never comment *what* the code does — that's what the names are for.
 - **Testing stack** — xUnit + FluentAssertions for assertions + Moq for mocking;
   coverlet for coverage. See the [`tdd` skill](.claude/skills/tdd/SKILL.md) for
   what a good test looks like on this stack.

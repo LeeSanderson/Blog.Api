@@ -1,3 +1,11 @@
+## Coding standards
+
+Avoid code comments by default — prefer clean, well-named classes, methods,
+and variables to carry intent. Only comment when the code genuinely can't say
+it: an obscure algorithm, a non-obvious constraint, or the reasoning behind a
+decision that would otherwise be lost. Never comment *what* the code does.
+See `CODING_STANDARDS.md` for the full set of conventions.
+
 ## Agent skills
 
 ### Issue tracker
