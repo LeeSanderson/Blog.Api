@@ -11,6 +11,7 @@
   </Folder>
   <Folder Name="/host/">
     <Project Path="host/src/Blog.Portfolio.Host/Blog.Portfolio.Host.csproj" />
+    <Project Path="host/tests/Blog.Portfolio.Host.Tests/Blog.Portfolio.Host.Tests.csproj" />
   </Folder>
   <Folder Name="/shared/backend/">
     <Project Path="shared/backend/Blog.Portfolio.Shared.Backend/Blog.Portfolio.Shared.Backend.csproj" />
