@@ -4,7 +4,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Applies to every project in the solution; one place to bump the version -->
     <GlobalPackageReference Include="Opinionated.DotNet.CodingStandards" Version="0.0.7" />
   </ItemGroup>
 

@@ -9,7 +9,6 @@ internal static class OpenApiExtensions
 {
     internal static IServiceCollection AddOpenApiDocumentation(this IServiceCollection services)
     {
-        // Configure OpenAPI
         services.AddSingleton(_ => new OpenApiConfigurationOptions
         {
             Info = new OpenApiInfo
