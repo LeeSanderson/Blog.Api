@@ -9,6 +9,11 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Folder Name="/aspire/">
+    <Project Path="aspire/Blog.Portfolio.AppHost/Blog.Portfolio.AppHost.csproj" />
+    <Project Path="aspire/Blog.Portfolio.AppHost.Tests/Blog.Portfolio.AppHost.Tests.csproj" />
+    <Project Path="aspire/Blog.Portfolio.ServiceDefaults/Blog.Portfolio.ServiceDefaults.csproj" />
+  </Folder>
   <Folder Name="/host/">
     <Project Path="host/src/Blog.Portfolio.Host/Blog.Portfolio.Host.csproj" />
     <Project Path="host/tests/Blog.Portfolio.Host.Tests/Blog.Portfolio.Host.Tests.csproj" />
